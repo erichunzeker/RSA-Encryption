@@ -5,9 +5,11 @@ public class LargeInteger {
 	
 	private final byte[] ONE = {(byte) 1};
 	private final byte[] ZERO = {(byte) 0};
+    private final byte[] TWO = {(byte) 2};
 
 
-	private byte[] val;
+
+    private byte[] val;
 
 	/**
 	 * Construct the LargeInteger from a given byte array
@@ -187,19 +189,18 @@ public class LargeInteger {
 		return this.add(other.negate());
 	}
 
+
 	/**
 	 * Compute the product of this and other
 	 * @param other LargeInteger to multiply by this
 	 * @return product of this and other
 	 */
-	public LargeInteger multiply(LargeInteger other) {
-		if(this.getVal() == ZERO || other.getVal() == ZERO)
-			return new LargeInteger(ZERO);
 
-		return karatsuba(this, other);
-	}
-	
-	/**
+	public LargeInteger multiply(LargeInteger other) {
+        return null;
+    }
+
+    /**
 	 * Run the extended Euclidean algorithm on this and other
 	 * @param other another LargeInteger
 	 * @return an array structured as follows:
@@ -208,8 +209,9 @@ public class LargeInteger {
 	 *   2:  a valid y value
 	 * such that this * x + other * y == GCD in index 0
 	 */
+
 	 public LargeInteger[] XGCD(LargeInteger other) {
-		 return null;
+         return null;
 	 }
 
 	 /**
@@ -218,51 +220,8 @@ public class LargeInteger {
 	  * @param n modulus value to use
 	  * @return this^y mod n
 	  */
+
 	 public LargeInteger modularExp(LargeInteger y, LargeInteger n) {
-		// YOUR CODE HERE (replace the return, too...)
-		return null;
-	 }
-
-	public static LargeInteger karatsuba(LargeInteger x, LargeInteger y) {
-
-		// cutoff to brute force
-		int N = Math.max(x.length(), y.length());
-
-
-		// number of bits divided by 2, rounded up
-		N = (N / 2) + (N % 2);
-
-		// x = a + 2^N b,   y = c + 2^N d
-		LargeInteger b = x.shiftRight(N);
-		LargeInteger a = x.subtract(b.shiftLeft(N));
-		LargeInteger d = y.shiftRight(N);
-		LargeInteger c = y.subtract(d.shiftLeft(N));
-
-
-		// compute sub-expressions
-		LargeInteger ac    = karatsuba(a, c);
-		LargeInteger bd    = karatsuba(b, d);
-		LargeInteger abcd  = karatsuba(a.add(b), c.add(d));
-
-		return ac.add(abcd.subtract(ac).subtract(bd).shiftLeft(N)).add(bd.shiftLeft(2*N));
-	}
-
-	private LargeInteger shiftLeft(int n) {
-	 	if (n == 0)
-	 		return new LargeInteger(ZERO);
-	 	if (n < 0)
-	 		return shiftRight(n);
-
-		return null;
-
-	}
-
-	private LargeInteger shiftRight(int n) {
-
-	 	return null;
-	}
-
-	private LargeInteger resize(LargeInteger other){
-	 	return null;
-	}
+         return null;
+     }
 }

@@ -67,17 +67,15 @@ public class RsaSign {
 
                 pubkey.close();
 
-                if(c.equals(m.modularExp(e, n)))
+                if (c.equals(m.modularExp(e, n)))
                     System.out.println("signature is valid");
                 else
                     System.out.println("signature is not valid");
 
 
-
             } catch (IOException e) {
                 System.out.println("error");
             }
-
 
         }
     }
