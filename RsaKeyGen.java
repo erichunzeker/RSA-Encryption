@@ -5,14 +5,16 @@ import java.util.Random;
 public class RsaKeyGen {
     public static void main(String[] args) {
         Random random = new Random();
-        LargeInteger p, q, n, phiN, e, d;
-        LargeInteger one = new LargeInteger(new byte[(byte) 1]);
-        
+        LargeInteger p, q, n, phiN, e, d, one;
+
+        one = new LargeInteger(new byte[]{(byte) 1});
         p = new LargeInteger(256, random);
         q = new LargeInteger(256, random);
         n = p.multiply(q);
         phiN = (p.subtract(one)).multiply(q.subtract(one));
-        e = new LargeInteger(new byte[(byte) 65537]);
+        e = new LargeInteger(512, random);
+        while(!phiN.XGCD(e)[0].equals(one) || phiN.subtract(e.add(one)).isNegative())
+            e = new LargeInteger(512, random);
         d = e.modularExp(one.negate(), phiN);
 
         try {

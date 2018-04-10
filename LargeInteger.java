@@ -4,6 +4,8 @@ import java.math.BigInteger;
 public class LargeInteger {
 	
 	private final byte[] ONE = {(byte) 1};
+	private final byte[] ZERO = {(byte) 0};
+
 
 	private byte[] val;
 
@@ -16,7 +18,7 @@ public class LargeInteger {
 	}
 
 	/**
-	 * Construct the LargeInteger by generatin a random n-bit number that is
+	 * Construct the LargeInteger by generating a random n-bit number that is
 	 * probably prime (2^-100 chance of being composite).
 	 * @param n the bitlength of the requested integer
 	 * @param rnd instance of java.util.Random to use in prime generation
@@ -191,8 +193,10 @@ public class LargeInteger {
 	 * @return product of this and other
 	 */
 	public LargeInteger multiply(LargeInteger other) {
-		// YOUR CODE HERE (replace the return, too...)
-		return null;
+		if(this.getVal() == ZERO || other.getVal() == ZERO)
+			return new LargeInteger(ZERO);
+
+		return karatsuba(this, other);
 	}
 	
 	/**
@@ -205,8 +209,7 @@ public class LargeInteger {
 	 * such that this * x + other * y == GCD in index 0
 	 */
 	 public LargeInteger[] XGCD(LargeInteger other) {
-		// YOUR CODE HERE (replace the return, too...)
-		return null;
+		 return null;
 	 }
 
 	 /**
@@ -219,4 +222,47 @@ public class LargeInteger {
 		// YOUR CODE HERE (replace the return, too...)
 		return null;
 	 }
+
+	public static LargeInteger karatsuba(LargeInteger x, LargeInteger y) {
+
+		// cutoff to brute force
+		int N = Math.max(x.length(), y.length());
+
+
+		// number of bits divided by 2, rounded up
+		N = (N / 2) + (N % 2);
+
+		// x = a + 2^N b,   y = c + 2^N d
+		LargeInteger b = x.shiftRight(N);
+		LargeInteger a = x.subtract(b.shiftLeft(N));
+		LargeInteger d = y.shiftRight(N);
+		LargeInteger c = y.subtract(d.shiftLeft(N));
+
+
+		// compute sub-expressions
+		LargeInteger ac    = karatsuba(a, c);
+		LargeInteger bd    = karatsuba(b, d);
+		LargeInteger abcd  = karatsuba(a.add(b), c.add(d));
+
+		return ac.add(abcd.subtract(ac).subtract(bd).shiftLeft(N)).add(bd.shiftLeft(2*N));
+	}
+
+	private LargeInteger shiftLeft(int n) {
+	 	if (n == 0)
+	 		return new LargeInteger(ZERO);
+	 	if (n < 0)
+	 		return shiftRight(n);
+
+		return null;
+
+	}
+
+	private LargeInteger shiftRight(int n) {
+
+	 	return null;
+	}
+
+	private LargeInteger resize(LargeInteger other){
+	 	return null;
+	}
 }
