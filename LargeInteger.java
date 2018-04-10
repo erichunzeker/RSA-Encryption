@@ -5,7 +5,6 @@ public class LargeInteger {
 	
 	private final byte[] ONE = {(byte) 1};
 	private final byte[] ZERO = {(byte) 0};
-    private final byte[] TWO = {(byte) 2};
 
 
 
@@ -197,10 +196,58 @@ public class LargeInteger {
 	 */
 
 	public LargeInteger multiply(LargeInteger other) {
-        return null;
+		LargeInteger product = new LargeInteger(new byte[this.length() + other.length()]);
+
+		LargeInteger x = this, y = other;
+
+		if(x.isNegative())
+			x.negate();
+		if(y.isNegative())
+			y.negate();
+
+		for(int i = x.length() - 1; i >= 0; i--) {
+			int currentBit = 1;
+			for(int j = 8; j > 0; j--) {
+				if((x.getVal()[i] & currentBit) > 0)
+					product = product.add(y);
+				currentBit = currentBit << 1;
+				y = y.shiftLeft();
+			}
+		}
+
+		return product;
+
     }
 
-    /**
+	private LargeInteger shiftLeft() {
+		byte[] shifted;
+		if((val[1] & 0x80) == 0x80) {
+			shifted = new byte[val.length + 1];
+			shifted[0] = 0x00;
+			shifted[1] = 0x01;
+			for(int i = 1; i <= this.length() - 1; i++) {
+				shifted[i + 1] = (byte)(this.val[i] << 1);
+				if(i <= this.length() - 2) {
+					if((this.val[i + 1] & 0x80) != 0)
+						shifted[i + 1] |= 0x01;
+				}
+			}
+		}
+		else {
+			shifted = new byte[val.length];
+			shifted[0] = 0;
+			for(int i = 1; i <= this.length() - 1; i++) {
+				shifted[i] = (byte)(this.val[i] << 1);
+				if(i <= this.length() - 2) {
+					if((this.val[i + 1] & 0x80) != 0)
+						shifted[i] |= 0x01;
+				}
+			}
+		}
+		return new LargeInteger(shifted);
+	}
+
+	/**
 	 * Run the extended Euclidean algorithm on this and other
 	 * @param other another LargeInteger
 	 * @return an array structured as follows:

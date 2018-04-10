@@ -22,12 +22,12 @@ public class RsaKeyGen {
 
         try {
             FileOutputStream pubkey = new FileOutputStream("pubkey.rsa");
-            pubkey.write(e.store().getVal());
-            pubkey.write(n.store().getVal());
+            pubkey.write(e.getVal());
+            pubkey.write(n.getVal());
             pubkey.close();
             FileOutputStream privkey = new FileOutputStream("privkey.rsa");
-            privkey.write(d.store().getVal());
-            privkey.write(n.store().getVal());
+            privkey.write(d.getVal());
+            privkey.write(n.getVal());
             privkey.close();
 
         } catch (IOException i) {
