@@ -1,3 +1,5 @@
+import sun.jvm.hotspot.debugger.linux.arm.LinuxARMCFrame;
+
 import java.util.Random;
 import java.math.BigInteger;
 
@@ -188,7 +190,6 @@ public class LargeInteger {
 		return this.add(other.negate());
 	}
 
-
 	/**
 	 * Compute the product of this and other
 	 * @param other LargeInteger to multiply by this
@@ -197,13 +198,7 @@ public class LargeInteger {
 
 	public LargeInteger multiply(LargeInteger other) {
 		LargeInteger product = new LargeInteger(new byte[this.length() + other.length()]);
-
 		LargeInteger x = this, y = other;
-
-		if(x.isNegative())
-			x.negate();
-		if(y.isNegative())
-			y.negate();
 
 		for(int i = x.length() - 1; i >= 0; i--) {
 			int currentBit = 1;
@@ -214,12 +209,11 @@ public class LargeInteger {
 				y = y.shiftLeft();
 			}
 		}
-
 		return product;
 
     }
 
-	private LargeInteger shiftLeft() {
+    private LargeInteger shiftLeft() {
 		byte[] shifted;
 		if((val[1] & 0x80) == 0x80) {
 			shifted = new byte[val.length + 1];
@@ -232,8 +226,7 @@ public class LargeInteger {
 						shifted[i + 1] |= 0x01;
 				}
 			}
-		}
-		else {
+		} else {
 			shifted = new byte[val.length];
 			shifted[0] = 0;
 			for(int i = 1; i <= this.length() - 1; i++) {
@@ -258,10 +251,40 @@ public class LargeInteger {
 	 */
 
 	 public LargeInteger[] XGCD(LargeInteger other) {
-         return null;
+	 	LargeInteger p = this, q = other;
+
+	 	while(!q.subtract(new LargeInteger(ONE)).isNegative()) {
+	 		LargeInteger temp = q;
+	 		q = p.mod(q);
+	 		p = temp;
+		}
+
+		return new LargeInteger[]{p, null, null};
 	 }
 
-	 /**
+	 public LargeInteger mod(LargeInteger other) {
+		if(this.subtract(other).isNegative())
+			return this;
+		else if (this.subtract(other.add(new LargeInteger(ONE))).isNegative())
+			return new LargeInteger(ZERO);
+		else
+			return this.subtract(other.multiply(this.divide(other)));
+	 }
+
+	 private LargeInteger divide(LargeInteger other) {
+	 	LargeInteger sum = new LargeInteger(new byte[]{0, 0});
+		LargeInteger a = this, b = other;
+	 	while (!a.subtract(b).isNegative()) {
+			a = a.subtract(b);
+	 		sum = sum.add(new LargeInteger(ONE));
+	 	}
+
+	 	if(sum.val == (new byte[]{0, 0}))
+	 		return new LargeInteger(ONE);
+	 	return sum;
+	 }
+
+	/**
 	  * Compute the result of raising this to the power of y mod n
 	  * @param y exponent to raise this to
 	  * @param n modulus value to use
@@ -269,6 +292,6 @@ public class LargeInteger {
 	  */
 
 	 public LargeInteger modularExp(LargeInteger y, LargeInteger n) {
-         return null;
+	 	return n.XGCD(this)[2];
      }
 }
