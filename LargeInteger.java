@@ -251,15 +251,14 @@ public class LargeInteger {
 	 */
 
 	 public LargeInteger[] XGCD(LargeInteger other) {
-	 	LargeInteger p = this, q = other;
+	 	LargeInteger a = this, b = other;
 
-	 	while(!q.subtract(new LargeInteger(ONE)).isNegative()) {
-	 		LargeInteger temp = q;
-	 		q = p.mod(q);
-	 		p = temp;
+	 	while(!b.subtract(new LargeInteger(ONE)).isNegative()) {
+	 		LargeInteger temp = b;
+	 		b = a.mod(b);
+	 		a = temp;
 		}
-
-		return new LargeInteger[]{p, null, null};
+		return new LargeInteger[]{a, null, null};
 	 }
 
 	 public LargeInteger mod(LargeInteger other) {
@@ -274,7 +273,8 @@ public class LargeInteger {
 	 private LargeInteger divide(LargeInteger other) {
 	 	LargeInteger sum = new LargeInteger(new byte[]{0, 0});
 		LargeInteger a = this, b = other;
-	 	while (!a.subtract(b).isNegative()) {
+
+		while (!a.subtract(b).isNegative()) {
 			a = a.subtract(b);
 	 		sum = sum.add(new LargeInteger(ONE));
 	 	}
@@ -292,6 +292,6 @@ public class LargeInteger {
 	  */
 
 	 public LargeInteger modularExp(LargeInteger y, LargeInteger n) {
-	 	return n.XGCD(this)[2];
+	 	return null;
      }
 }
