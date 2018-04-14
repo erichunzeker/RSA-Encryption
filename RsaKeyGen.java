@@ -24,13 +24,14 @@ public class RsaKeyGen {
 
         try {
             FileOutputStream pubkey = new FileOutputStream("pubkey.rsa");
-            pubkey.write(e.store().getVal());
-            pubkey.write(n.store().getVal());
+            pubkey.write(e.resize().getVal());
+            pubkey.write(n.resize().getVal());
             pubkey.close();
             FileOutputStream privkey = new FileOutputStream("privkey.rsa");
-            privkey.write(d.store().getVal());
-            privkey.write(n.store().getVal());
+            privkey.write(d.resize().getVal());
+            privkey.write(n.resize().getVal());
             privkey.close();
+
 
         } catch (IOException i) {
             System.out.println("File error");
