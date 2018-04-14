@@ -6,27 +6,30 @@ public class RsaKeyGen {
     public static void main(String[] args) {
 
         Random random = new Random();
-        LargeInteger p, q, n, phiN, e, d, one;
+        LargeInteger p, q, n, phiN, e, d, one, two;
 
         one = new LargeInteger(new byte[]{(byte) 1});
+        two = new LargeInteger(new byte[]{(byte) 2});
 
-        p = new LargeInteger(256, random);
-        q = new LargeInteger(256, random);
-        n = p.multiply(q);
-        phiN = (p.subtract(one)).multiply(q.subtract(one));
-        e = new LargeInteger(512, random);
-        while(!phiN.XGCD(e)[0].equals(one))
+
+        do {
+            p = new LargeInteger(256, random);
+            q = new LargeInteger(256, random);
+            n = p.multiply(q);
+            phiN = (p.subtract(one)).multiply(q.subtract(one));
             e = new LargeInteger(512, random);
+        } while(phiN.subtract(e).isNegative() || !phiN.XGCD(e)[0].subtract(two).isNegative());
+
         d = e.modularExp(one.negate(), phiN);
 
         try {
             FileOutputStream pubkey = new FileOutputStream("pubkey.rsa");
-            pubkey.write(e.getVal());
-            pubkey.write(n.getVal());
+            pubkey.write(e.store().getVal());
+            pubkey.write(n.store().getVal());
             pubkey.close();
             FileOutputStream privkey = new FileOutputStream("privkey.rsa");
-            privkey.write(d.getVal());
-            privkey.write(n.getVal());
+            privkey.write(d.store().getVal());
+            privkey.write(n.store().getVal());
             privkey.close();
 
         } catch (IOException i) {
